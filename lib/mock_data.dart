@@ -1,0 +1,98 @@
+final List<Map<String, dynamic>> mockBancoDeDados = [
+  {
+    'id': 1,
+    'valor': 150.00,
+    'formPag': 'À vista',
+    'tipo': 'Dinheiro',
+  },
+  {
+    'id': 2,
+    'valor': 320.50,
+    'formPag': 'A prazo',
+    'tipo': 'Cartão de Crédito',
+  },
+  {
+    'id': 3,
+    'valor': 75.25,
+    'formPag': 'À vista',
+    'tipo': 'Pix',
+  },
+  {
+    'id': 4,
+    'valor': 40.00,
+    'formPag': 'A prazo',
+    'tipo': 'Pedido',
+  },
+  {
+    'id': 5,
+    'valor': 200.00,
+    'formPag': 'À vista',
+    'tipo': 'Dinheiro',
+  },
+    {
+    'id': 5,
+    'valor': 150.00,
+    'formPag': 'À vista',
+    'tipo': 'Dinheiro',
+  },
+  {
+    'id': 3,
+    'valor': 320.50,
+    'formPag': 'A prazo',
+    'tipo': 'Cartão de Crédito',
+  },
+  {
+    'id': 4,
+    'valor': 75.25,
+    'formPag': 'À vista',
+    'tipo': 'Pix',
+  },
+  {
+    'id': 2,
+    'valor': 40.00,
+    'formPag': 'A prazo',
+    'tipo': 'Pedido',
+  },
+  {
+    'id': 1,
+    'valor': 200.00,
+    'formPag': 'À vista',
+    'tipo': 'Dinheiro',
+  },
+    {
+    'id': 3,
+    'valor': 150.00,
+    'formPag': 'À vista',
+    'tipo': 'Dinheiro',
+  },
+  {
+    'id': 5,
+    'valor': 320.50,
+    'formPag': 'A prazo',
+    'tipo': 'Cartão de Crédito',
+  },
+  {
+    'id': 1,
+    'valor': 75.25,
+    'formPag': 'À vista',
+    'tipo': 'Pix',
+  },
+  {
+    'id': 2,
+    'valor': 40.00,
+    'formPag': 'A prazo',
+    'tipo': 'Pedido',
+  },
+  {
+    'id': 4,
+    'valor': 200.00,
+    'formPag': 'À vista',
+    'tipo': 'Dinheiro',
+  },
+  {
+    'id': 1,
+    'valor': 300.00,
+    'formPag': 'A prazo',
+    'tipo': 'Pedido',
+  },
+];
