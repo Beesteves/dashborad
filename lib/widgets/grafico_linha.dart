@@ -1,39 +1,31 @@
+import 'package:dashboard/viewmodels/grafico_viewmodels.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class GraficoLinha extends StatelessWidget {
-  final List<Map<String, dynamic>> dadosBrutos;
-  
-  GraficoLinha({super.key, required this.dadosBrutos});
+  const GraficoLinha({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<double> vendas = dadosBrutos
-    .map((item) => (item['valor'] as num).toDouble())
-    .toList();
+    final vm = Provider.of<GraficoLinhaViewModel>(context);
+    final vendas = vm.valores;
 
     return SizedBox(
       height: 300,
       child: LineChart(
         LineChartData(
           titlesData: FlTitlesData(
-            show: true,
-            topTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            rightTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
+            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
                 interval: 1,
-                getTitlesWidget: (value, _) {
-                  return Text(
-                    'Venda ${value.toInt() + 1}',
-                    style: const TextStyle(fontSize: 10),
-                  );
-                },
+                getTitlesWidget: (value, _) => Text(
+                  'Venda ${value.toInt() + 1}',
+                  style: const TextStyle(fontSize: 10),
+                ),
               ),
             ),
             leftTitles: AxisTitles(
@@ -49,7 +41,6 @@ class GraficoLinha extends StatelessWidget {
             ),
           ),
           gridData: FlGridData(
-            show: true,
             drawVerticalLine: false,
             drawHorizontalLine: true,
             horizontalInterval: 100,
@@ -61,19 +52,13 @@ class GraficoLinha extends StatelessWidget {
           lineTouchData: LineTouchData(
             touchTooltipData: LineTouchTooltipData(
               tooltipBgColor: Colors.black87,
-              getTooltipItems: (List<LineBarSpot> touchedSpots) {
-                return touchedSpots.map((spot) {
-                  return LineTooltipItem(
-                    'R\$ ${spot.y.toStringAsFixed(2)}',
-                    const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  );
-                }).toList();
-              },
+              getTooltipItems: (spots) => spots.map(
+                (spot) => LineTooltipItem(
+                  'R\$ ${spot.y.toStringAsFixed(2)}',
+                  const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ).toList(),
             ),
-            touchCallback: (FlTouchEvent event, LineTouchResponse? response) {},
             handleBuiltInTouches: true,
           ),
           lineBarsData: [
@@ -81,7 +66,7 @@ class GraficoLinha extends StatelessWidget {
               isCurved: true,
               spots: List.generate(
                 vendas.length,
-                (index) => FlSpot(index.toDouble(), vendas[index]),
+                (i) => FlSpot(i.toDouble(), vendas[i]),
               ),
               barWidth: 3,
               color: Colors.indigo,
@@ -100,6 +85,7 @@ class GraficoLinha extends StatelessWidget {
             ),
           ),
           minY: 0,
+          maxY: vm.maxValor + 50,
         ),
       ),
     );

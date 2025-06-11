@@ -1,11 +1,15 @@
-import 'package:dashboard/services/grafico_pizza.dart';
-import 'package:dashboard/services/grafico_linha.dart';
+import 'package:dashboard/models/venda_diaria.dart';
+import 'package:dashboard/viewmodels/dashoard_viewmodel.dart';
+import 'package:dashboard/viewmodels/grafico_viewmodels.dart';
+import 'package:dashboard/widgets/grafico_pizza.dart';
+import 'package:dashboard/widgets/grafico_linha.dart';
 import 'package:dashboard/views/login.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
 class DashboardHome extends StatelessWidget {
-    final List<Map<String, dynamic>> dadosUsuario;
+    final List<VendaDiaria> dadosUsuario;
 
   const DashboardHome({super.key, required this.dadosUsuario});
 
@@ -14,10 +18,7 @@ class DashboardHome extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
 
-    final totalVendas = dadosUsuario.fold<double>(
-      0,
-      (soma, item) => soma + (item['valor'] ?? 0),
-    );
+    final viewModel = DashboardViewModel(dadosUsuario);
 
     return Scaffold(
       backgroundColor: Color.fromARGB(135, 131, 140, 153),
@@ -45,46 +46,23 @@ class DashboardHome extends StatelessWidget {
                   runSpacing: 16,
                   alignment: WrapAlignment.center,
                   children: [
-                    _buildCard('Vendas', 'R\$${totalVendas}', Icons.attach_money, isMobile),
+                    _buildCard('Vendas', 'R\$${viewModel.totalVendas.toStringAsFixed(2)}', Icons.attach_money, isMobile),
                   ],
                 ),
                 const SizedBox(height: 32),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
-                  ),
-                  child: Column(
-                    crossAxisAlignment:  CrossAxisAlignment.start,
-                    children:[
-                      const Text(
-                        'Vendas do Dia',
-                        style: TextStyle(fontSize: 18, fontWeight:  FontWeight.bold),
-                      ),
-                      const SizedBox(height: 16,),
-                      GraficoLinha(dadosBrutos: dadosUsuario,)
-                    ],
+                _buildGraficoContainer( 
+                  title: 'Vendas do Dia',
+                  child: ChangeNotifierProvider(
+                    create: (_) => GraficoLinhaViewModel()..dados = dadosUsuario,
+                    child: const GraficoLinha(),
                   ),
                 ),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+                _buildGraficoContainer(
+                  child: ChangeNotifierProvider(
+                    create: (_) => GraficoPizzaViewModel()..dados = dadosUsuario,
+                    child: const GraficoPizza(),
                   ),
-                  child: Column(
-                    crossAxisAlignment:  CrossAxisAlignment.start,
-                    children:[
-                      const SizedBox(height: 16,),
-                      GraficoPizza(dadosBrutos: dadosUsuario)
-                    ],
-                  ),
-                )
+                ),
               ],
             ),
           );
@@ -127,6 +105,30 @@ class DashboardHome extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildGraficoContainer({String? title, required Widget child}) {
+    return Container(
+      margin: const EdgeInsets.only(top: 16),
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (title != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            ),
+          child,
+        ],
       ),
     );
   }

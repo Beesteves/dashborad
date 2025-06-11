@@ -1,42 +1,16 @@
-import 'package:flutter/material.dart';
+import 'package:dashboard/viewmodels/grafico_viewmodels.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class GraficoPizza extends StatelessWidget {
-  final List<Map<String, dynamic>> dadosBrutos;
-
-  const GraficoPizza({Key? key, required this.dadosBrutos}) : super(key: key);
+  const GraficoPizza({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, Color> cores = {
-      'A VISTA': Colors.blue,
-      'A PRAZO': Colors.green,
-    };
-
-    final Map<String, double> agrupado = {};
-
-    for (var item in dadosBrutos) {
-      final formPag = item['formPag'];
-      final valor = (item['valor'] as num).toDouble();
-
-      if (formPag == 'A VISTA' || formPag == 'A PRAZO') {
-        agrupado[formPag] = (agrupado[formPag] ?? 0) + valor;
-      }
-    }
-    
-    final List<Map<String, dynamic>> dados = agrupado.entries.map((e) {
-      return {
-        'formPag': e.key,
-        'valor': e.value,
-        'cor': cores[e.key] ?? Colors.grey,
-      };
-    }).toList();
-    
-      print("dados $dados");
-
-    final total = dados.fold(0.0, (soma, item) => soma + item['valor']);
-    
-      print("total $total");
+    final vm = Provider.of<GraficoPizzaViewModel>(context);
+    final dados = vm.dadosAgrupados;
+    final total = vm.total;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,7 +62,7 @@ class GraficoPizza extends StatelessWidget {
                 Text(valorLabel),
                 const SizedBox(width: 12),
                 GestureDetector(
-                  onTap: () => mostrarDetalhesVenda(context, item),
+                  onTap: () => mostrarDetalhesVenda(context, item['formPag']),
                   child: const Text(
                     'VER',
                     style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
@@ -102,18 +76,16 @@ class GraficoPizza extends StatelessWidget {
     );
   }
 
-  void mostrarDetalhesVenda(BuildContext context, Map<String, dynamic> item) { //Tela para listar as vendas por categoria
-    // Filtrar todas as vendas daquele formPag
-    final vendasFiltradas = dadosBrutos
-        .where((venda) => venda['formPag'] == item['formPag'])
-        .toList();
+  void mostrarDetalhesVenda(BuildContext context, String formPag) {
+    final vm = Provider.of<GraficoPizzaViewModel>(context, listen: false);
+    final vendasFiltradas = vm.filtrarPorFormaPagamento(formPag);
 
     showDialog(
       context: context,
       builder: (_) {
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Text('Vendas - ${item['formPag']}', style: const TextStyle(fontWeight: FontWeight.bold)),
+          title: Text('Vendas - $formPag', style: const TextStyle(fontWeight: FontWeight.bold)),
           content: SizedBox(
             width: double.maxFinite,
             child: ListView.separated(
@@ -124,8 +96,8 @@ class GraficoPizza extends StatelessWidget {
                 final venda = vendasFiltradas[index];
                 return ListTile(
                   leading: const Icon(Icons.monetization_on),
-                  title: Text('Valor: R\$${(venda['valor'] as double).toStringAsFixed(2)}'),
-                  subtitle: Text('Tipo: ${venda['tipo']}'),
+                  title: Text('Valor: R\$${(venda.valor as double).toStringAsFixed(2)}'),
+                  subtitle: Text('Tipo: ${venda.tipo}'),
                 );
               },
             ),
