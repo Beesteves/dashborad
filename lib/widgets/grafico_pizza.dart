@@ -8,25 +8,22 @@ class GraficoPizza extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Mapear cor para as formas de pagamento que interessam
     final Map<String, Color> cores = {
-      'À vista': Colors.blue,
-      'A prazo': Colors.green,
+      'A VISTA': Colors.blue,
+      'A PRAZO': Colors.green,
     };
 
-    // Agrupar e somar valores por formPag, só para 'À vista' e 'A prazo'
     final Map<String, double> agrupado = {};
 
     for (var item in dadosBrutos) {
       final formPag = item['formPag'];
       final valor = (item['valor'] as num).toDouble();
 
-      if (formPag == 'À vista' || formPag == 'A prazo') {
+      if (formPag == 'A VISTA' || formPag == 'A PRAZO') {
         agrupado[formPag] = (agrupado[formPag] ?? 0) + valor;
       }
     }
-
-    // Criar lista de dados para gráfico com cor
+    
     final List<Map<String, dynamic>> dados = agrupado.entries.map((e) {
       return {
         'formPag': e.key,
@@ -34,8 +31,12 @@ class GraficoPizza extends StatelessWidget {
         'cor': cores[e.key] ?? Colors.grey,
       };
     }).toList();
+    
+      print("dados $dados");
 
     final total = dados.fold(0.0, (soma, item) => soma + item['valor']);
+    
+      print("total $total");
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +102,7 @@ class GraficoPizza extends StatelessWidget {
     );
   }
 
-  void mostrarDetalhesVenda(BuildContext context, Map<String, dynamic> item) {
+  void mostrarDetalhesVenda(BuildContext context, Map<String, dynamic> item) { //Tela para listar as vendas por categoria
     // Filtrar todas as vendas daquele formPag
     final vendasFiltradas = dadosBrutos
         .where((venda) => venda['formPag'] == item['formPag'])

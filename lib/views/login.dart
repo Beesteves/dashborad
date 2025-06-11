@@ -1,5 +1,5 @@
+import 'package:dashboard/services/api_service.dart';
 import 'package:flutter/material.dart';
-import 'package:dashboard/mock_data.dart';
 import 'package:dashboard/views/home.dart';
 
 class MyApp extends StatelessWidget {
@@ -36,16 +36,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final input = _passwordController.text.trim();
 
-    // Tenta converter para int (já que os IDs no mock são inteiros)
-    final userId = int.tryParse(input);
+    try {
+      final dados = await ApiService.fetchDados();
 
-    // Simula atraso de rede
-    await Future.delayed(const Duration(seconds: 1));
-
-    if (userId != null) {
-      final dadosUsuario = mockBancoDeDados
-          .where((item) => item['id'] == userId)
-          .toList();
+      final dadosUsuario = dados.where((item) {
+         return item['iD'].toString() == input; // ou qualquer outro critério
+      }).toList();
 
       if (dadosUsuario.isNotEmpty) {
         Navigator.pushReplacement(
@@ -55,15 +51,22 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
         return;
+      } else {
+        setState(() {
+          _errorMessage = 'Palavra-chave não encontrada nos dados da API';
+        });
       }
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Erro de rede: $e';
+      });
     }
 
     setState(() {
-      _errorMessage = 'Palavra-chave inválida';
       _loading = false;
     });
   }
-
+    
   @override
   Widget build(BuildContext context) {
     return Scaffold(
