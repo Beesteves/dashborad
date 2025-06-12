@@ -5,5 +5,5 @@ class DashboardViewModel {
 
   DashboardViewModel(this.vendas);
 
-  double get totalVendas => vendas.fold(0.0, (soma, venda) => soma + venda.valor);
+  double get totalVendas => vendas.fold(0.0, (soma, venda) => soma + venda.valor); //soma todos os valores das vendas diarias
 }

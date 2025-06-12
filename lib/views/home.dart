@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 
-class DashboardHome extends StatelessWidget {
-    final List<VendaDiaria> dadosUsuario;
+class DashboardHome extends StatelessWidget { //estrutra da tela home
+    final List<VendaDiaria> dadosUsuario; //tras a lista com todas as vendas do usuario
 
   const DashboardHome({super.key, required this.dadosUsuario});
 
@@ -41,24 +41,24 @@ class DashboardHome extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Wrap(
+                Wrap( //caixa ajustavel para varios _buildCards
                   spacing: 16,
                   runSpacing: 16,
                   alignment: WrapAlignment.center,
                   children: [
-                    _buildCard('Vendas', 'R\$${viewModel.totalVendas.toStringAsFixed(2)}', Icons.attach_money, isMobile),
+                    _buildCard('Vendas', 'R\$${viewModel.totalVendas.toStringAsFixed(2)}', Icons.attach_money, isMobile), //chama a classe viewModel para trazer o valor total
                   ],
                 ),
                 const SizedBox(height: 32),
-                _buildGraficoContainer( 
+                _buildGraficoContainer( //build do grafico
                   title: 'Vendas do Dia',
-                  child: ChangeNotifierProvider(
+                  child: ChangeNotifierProvider( //passagem pelo provider do model com os dados para view
                     create: (_) => GraficoLinhaViewModel()..dados = dadosUsuario,
                     child: const GraficoLinha(),
                   ),
                 ),
                 _buildGraficoContainer(
-                  child: ChangeNotifierProvider(
+                  child: ChangeNotifierProvider( //passagem pelo provider do model com os dados para view
                     create: (_) => GraficoPizzaViewModel()..dados = dadosUsuario,
                     child: const GraficoPizza(),
                   ),
@@ -71,7 +71,7 @@ class DashboardHome extends StatelessWidget {
     );
   }
 
-  Widget _buildCard(String title, String value, IconData icon, bool isMobile) {
+  Widget _buildCard(String title, String value, IconData icon, bool isMobile) { //estrutura do _buildCard
     return SizedBox(
       width: isMobile ? double.infinity : 250,
       height: 120,
@@ -109,7 +109,7 @@ class DashboardHome extends StatelessWidget {
     );
   }
 
-  Widget _buildGraficoContainer({String? title, required Widget child}) {
+  Widget _buildGraficoContainer({String? title, required Widget child}) {//estrutura do _buidlGrafico
     return Container(
       margin: const EdgeInsets.only(top: 16),
       width: double.infinity,

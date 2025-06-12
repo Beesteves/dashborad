@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dashboard/viewmodels/login_viewmodel.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatelessWidget { //Estrutura da tela e design
   const LoginScreen({super.key});
 
   @override
@@ -16,11 +16,11 @@ class LoginScreen extends StatelessWidget {
             body: Stack(
               fit: StackFit.expand,
               children: [
-                Image.asset('lib/imagens/background.jpg', fit: BoxFit.cover),
+                Image.asset('lib/imagens/background.jpg', fit: BoxFit.cover), //imagens de fundo
                 SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
                   child: Center(
-                    child: ConstrainedBox(
+                    child: ConstrainedBox( //caixa onde se encontra login
                       constraints: const BoxConstraints(maxWidth: 400),
                       child: Container(
                         padding: const EdgeInsets.all(24),
@@ -38,9 +38,9 @@ class LoginScreen extends StatelessWidget {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Image.asset('lib/imagens/logo.png', height: 100),
+                            Image.asset('lib/imagens/logo.png', height: 100), //logo Portal
                             const SizedBox(height: 24),
-                            TextField(
+                            TextField( //Entrada da Palavra-chave
                               controller: viewModel.passwordController,
                               obscureText: true,
                               textAlign: TextAlign.center,
@@ -52,15 +52,15 @@ class LoginScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
-                              onSubmitted: (_) => _handleLogin(context),
+                              onSubmitted: (_) => _handleLogin(context), //funcao de submit
                             ),
                             const SizedBox(height: 16),
-                            if (viewModel.errorMessage.isNotEmpty)
+                            if (viewModel.errorMessage.isNotEmpty) //Espaço para mensagem de erro
                               Text(viewModel.errorMessage, style: const TextStyle(color: Colors.red)),
                             const SizedBox(height: 16),
                             viewModel.isLoading
                                 ? const CircularProgressIndicator()
-                                : SizedBox(
+                                : SizedBox( //botao de entrar
                                     width: double.infinity,
                                     child: ElevatedButton(
                                       onPressed: () => _handleLogin(context),
@@ -81,11 +81,11 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  void _handleLogin(BuildContext context) async {
-    final viewModel = Provider.of<LoginViewModel>(context, listen: false);
-    final usuarios = await viewModel.login();
+  void _handleLogin(BuildContext context) async {  //funcao para verificar a palavra e chamar proxima tela
+    final viewModel = Provider.of<LoginViewModel>(context, listen: false); //atribui a classe LoginViewModel e a palavra-chave inserida
+    final usuarios = await viewModel.login(); //chama a funcao para validacao da palavra chave pela fncao login()
 
-    if (usuarios.isNotEmpty) {
+    if (usuarios.isNotEmpty) { //verifica se retornou usuario e chama a tela DashboardHome
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => DashboardHome(dadosUsuario: usuarios)),

@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:dashboard/models/venda_diaria.dart';
 
-class GraficoPizzaViewModel extends ChangeNotifier {
-  final Map<String, Color> cores = {
+class GraficoPizzaViewModel extends ChangeNotifier { //view do grafico pizza
+  final Map<String, Color> cores = { //indica as cores para forma de pagamento
     'A VISTA': Colors.blue,
     'A PRAZO': Colors.green,
   };
 
   List<VendaDiaria> _dados = [];
 
-  set dados(List<VendaDiaria> value) {
+  set dados(List<VendaDiaria> value) { //recebe os dados e manda para funcao processar
     _dados = value;
     _processarDados();
   }
 
   final List<Map<String, dynamic>> _agrupado = [];
 
-  List<Map<String, dynamic>> get dadosAgrupados => _agrupado;
+  List<Map<String, dynamic>> get dadosAgrupados => _agrupado; 
   double get total => _agrupado.fold(0.0, (soma, item) => soma + (item['valor'] as double));
 
   void _processarDados() {
@@ -49,7 +49,7 @@ class GraficoPizzaViewModel extends ChangeNotifier {
   }
 }
 
-class GraficoLinhaViewModel extends ChangeNotifier {
+class GraficoLinhaViewModel extends ChangeNotifier { //View do grafico de linha
   List<VendaDiaria> _dados = [];
 
   set dados(List<VendaDiaria> value) {
