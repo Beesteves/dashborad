@@ -3,8 +3,8 @@ import 'package:dashboard/models/venda_diaria.dart';
 
 class GraficoPizzaViewModel extends ChangeNotifier { //view do grafico pizza
   final Map<String, Color> cores = { //indica as cores para forma de pagamento
-    'A VISTA': Colors.blue,
-    'A PRAZO': Colors.green,
+    'À Vista': Colors.blue,
+    'A Prazo': Colors.green,
   };
 
   List<VendaDiaria> _dados = [];
@@ -18,15 +18,21 @@ class GraficoPizzaViewModel extends ChangeNotifier { //view do grafico pizza
 
   List<Map<String, dynamic>> get dadosAgrupados => _agrupado; 
   double get total => _agrupado.fold(0.0, (soma, item) => soma + (item['valor'] as double));
+  
 
   void _processarDados() {
     final Map<String, double> mapa = {};
 
     for (var item in _dados) {
-      final formPag = item.formPag;
+      String formPag = '';
+      if(item.formPag == 'V'){
+        formPag = 'À Vista';
+      } else if(item.formPag == 'P'){
+        formPag = 'A Prazo';
+      }
       final valor = (item.valor as num).toDouble();
 
-      if (formPag == 'A VISTA' || formPag == 'A PRAZO') {
+      if (formPag == 'À Vista' || formPag == 'A Prazo') {
         mapa[formPag] = (mapa[formPag] ?? 0) + valor;
       }
     }

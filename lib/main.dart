@@ -1,7 +1,16 @@
+import 'package:dashboard/viewmodels/login_viewmodel.dart';
 import 'package:dashboard/views/login.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(const MyApp());
+void main() => runApp(
+  MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LoginViewModel()),
+      ],
+      child: const MyApp(),
+    ),
+);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

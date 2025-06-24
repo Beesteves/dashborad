@@ -71,7 +71,7 @@ class GraficoPizza extends StatelessWidget {
               ],
             ),
           );
-        }).toList(),
+        }),
       ],
     );
   }
@@ -96,7 +96,7 @@ class GraficoPizza extends StatelessWidget {
                 final venda = vendasFiltradas[index];
                 return ListTile(
                   leading: const Icon(Icons.monetization_on),
-                  title: Text('Valor: R\$${(venda.valor as double).toStringAsFixed(2)}'),
+                  title: Text('Valor: R\$${(venda.valor).toStringAsFixed(2)}'),
                   subtitle: Text('Tipo: ${venda.tipo}'),
                 );
               },

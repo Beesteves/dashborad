@@ -70,7 +70,7 @@ class GraficoLinha extends StatelessWidget {
               ),
               barWidth: 3,
               color: Colors.indigo,
-              dotData: FlDotData(show: true),
+              dotData: const FlDotData(show: true),
               belowBarData: BarAreaData(
                 show: true,
                 color: Colors.indigo.withOpacity(0.2),

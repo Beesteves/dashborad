@@ -1,5 +1,6 @@
 import 'package:dashboard/models/venda_diaria.dart';
-import 'package:dashboard/viewmodels/dashoard_viewmodel.dart';
+import 'package:dashboard/services/api_service.dart';
+import 'package:dashboard/viewmodels/dashboard_viewmodel.dart';
 import 'package:dashboard/viewmodels/grafico_viewmodels.dart';
 import 'package:dashboard/widgets/grafico_pizza.dart';
 import 'package:dashboard/widgets/grafico_linha.dart';
@@ -9,35 +10,41 @@ import 'package:provider/provider.dart';
 
 
 class DashboardHome extends StatelessWidget { //estrutra da tela home
-    final List<VendaDiaria> dadosUsuario; //tras a lista com todas as vendas do usuario
 
-  const DashboardHome({super.key, required this.dadosUsuario});
+  const DashboardHome({super.key});
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
 
-    final viewModel = DashboardViewModel(dadosUsuario);
+    final viewModel = Provider.of<DashboardViewModel>(context);
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(135, 131, 140, 153),
+      backgroundColor: const Color.fromARGB(99, 255, 229, 218),
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(247, 131, 140, 153),
-        title: Text('Portal.com'),
+        backgroundColor: const Color.fromARGB(231, 255, 162, 129),
+        title: const Text('Portal.com'),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: () {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>  const LoginScreen()));
             },
-          )
-        ],
+          ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () async {
+              final novasVendas = await buscarNovasVendas(context);
+              Provider.of<DashboardViewModel>(context, listen: false).atualizarDados(novasVendas);
+            },
+          ),
+        ],        
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -50,16 +57,22 @@ class DashboardHome extends StatelessWidget { //estrutra da tela home
                   ],
                 ),
                 const SizedBox(height: 32),
-                _buildGraficoContainer( //build do grafico
+                _buildGraficoContainer(
                   title: 'Vendas do Dia',
-                  child: ChangeNotifierProvider( //passagem pelo provider do model com os dados para view
-                    create: (_) => GraficoLinhaViewModel()..dados = dadosUsuario,
+                  child: ChangeNotifierProvider(
+                    create: (_) {
+                      final vendas = Provider.of<DashboardViewModel>(context, listen: false).vendas;
+                      return GraficoLinhaViewModel()..dados = vendas;
+                    },
                     child: const GraficoLinha(),
                   ),
                 ),
                 _buildGraficoContainer(
-                  child: ChangeNotifierProvider( //passagem pelo provider do model com os dados para view
-                    create: (_) => GraficoPizzaViewModel()..dados = dadosUsuario,
+                  child: ChangeNotifierProvider(
+                    create: (_) {
+                      final vendas = Provider.of<DashboardViewModel>(context, listen: false).vendas;
+                      return GraficoPizzaViewModel()..dados = vendas;
+                    },
                     child: const GraficoPizza(),
                   ),
                 ),
@@ -76,7 +89,7 @@ class DashboardHome extends StatelessWidget { //estrutra da tela home
       width: isMobile ? double.infinity : 250,
       height: 120,
       child: Card(
-        color: Color.fromARGB(255, 255, 255, 255),
+        color: const Color.fromARGB(255, 255, 255, 255),
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Padding(
@@ -93,11 +106,11 @@ class DashboardHome extends StatelessWidget { //estrutra da tela home
                   children: [
                     Text(
                       title,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       value,
-                      style: TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 20),
                     ),
                   ],
                 ),
@@ -131,6 +144,12 @@ class DashboardHome extends StatelessWidget { //estrutra da tela home
         ],
       ),
     );
+  }
+
+  Future<List<VendaDiaria>> buscarNovasVendas(BuildContext context) async {
+    final viewModel = Provider.of<DashboardViewModel>(context, listen: false);
+    final dados = await ApiService.fetchDados();
+    return dados.where((v) => v.iD == viewModel.usuarioID).toList();
   }
 }
 

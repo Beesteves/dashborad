@@ -1,3 +1,4 @@
+import 'package:dashboard/viewmodels/dashboard_viewmodel.dart';
 import 'package:dashboard/views/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -48,8 +49,21 @@ class LoginScreen extends StatelessWidget { //Estrutura da tela e design
                                 filled: true,
                                 fillColor: Colors.white,
                                 labelText: 'Palavra-chave',
-                                border: OutlineInputBorder(
+                                floatingLabelStyle: const TextStyle(
+                                  color: Color.fromARGB(255, 243, 89, 33), 
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(
+                                    color: Color.fromARGB(255, 243, 89, 33),
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(
+                                    color: Color.fromARGB(255, 243, 89, 33),
+                                  ),
                                 ),
                               ),
                               onSubmitted: (_) => _handleLogin(context), //funcao de submit
@@ -63,6 +77,10 @@ class LoginScreen extends StatelessWidget { //Estrutura da tela e design
                                 : SizedBox( //botao de entrar
                                     width: double.infinity,
                                     child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color.fromARGB(255, 255, 244, 240),
+                                        foregroundColor: const Color.fromARGB(255, 243, 89, 33),
+                                      ),
                                       onPressed: () => _handleLogin(context),
                                       child: const Text('Entrar'),
                                     ),
@@ -86,9 +104,15 @@ class LoginScreen extends StatelessWidget { //Estrutura da tela e design
     final usuarios = await viewModel.login(); //chama a funcao para validacao da palavra chave pela fncao login()
 
     if (usuarios.isNotEmpty) { //verifica se retornou usuario e chama a tela DashboardHome
+      final id = viewModel.passwordController.text.trim();
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => DashboardHome(dadosUsuario: usuarios)),
+        MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => DashboardViewModel(usuarios, id),
+            child: const DashboardHome(),
+          ),
+        )
       );
     }
   }
