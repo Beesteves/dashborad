@@ -51,7 +51,11 @@ class GraficoPizzaViewModel extends ChangeNotifier { //view do grafico pizza
   }
 
   List<VendaDiaria> filtrarPorFormaPagamento(String formPag) {
-    return _dados.where((v) => v.formPag == formPag).toList();
+    if(formPag == 'À Vista'){
+      return _dados.where((v) => v.formPag == 'V').toList();
+    } else{
+      return _dados.where((v) => v.formPag == 'P').toList();
+    }
   }
 }
 

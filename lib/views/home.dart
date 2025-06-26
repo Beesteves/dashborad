@@ -27,16 +27,16 @@ class DashboardHome extends StatelessWidget { //estrutra da tela home
         title: const Text('Portal.com'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>  const LoginScreen()));
-            },
-          ),
-          IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () async {
               final novasVendas = await buscarNovasVendas(context);
               Provider.of<DashboardViewModel>(context, listen: false).atualizarDados(novasVendas);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>  LoginScreen()));
             },
           ),
         ],        

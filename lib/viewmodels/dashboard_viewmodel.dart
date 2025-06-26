@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class DashboardViewModel extends ChangeNotifier {
   List<VendaDiaria> _vendas;
-  final String usuarioID; // <- novo campo
+  final String usuarioID;
 
   DashboardViewModel(this._vendas, this.usuarioID);
 
