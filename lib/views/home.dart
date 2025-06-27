@@ -9,8 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 
-class DashboardHome extends StatelessWidget { //estrutra da tela home
-
+class DashboardHome extends StatelessWidget {
   const DashboardHome({super.key});
 
   @override
@@ -21,25 +20,28 @@ class DashboardHome extends StatelessWidget { //estrutra da tela home
     final viewModel = Provider.of<DashboardViewModel>(context);
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(99, 255, 229, 218),
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(231, 255, 162, 129),
-        title: const Text('Portal.com'),
+        backgroundColor: const Color(0xFF424242),
+        title: const Text(
+          'Portal.com',
+          style: TextStyle(color: Colors.white),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh, color: Colors.white),
             onPressed: () async {
               final novasVendas = await buscarNovasVendas(context);
               Provider.of<DashboardViewModel>(context, listen: false).atualizarDados(novasVendas);
             },
           ),
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout, color: Colors.white),
             onPressed: () {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>  LoginScreen()));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
             },
           ),
-        ],        
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -48,12 +50,17 @@ class DashboardHome extends StatelessWidget { //estrutra da tela home
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Wrap( //caixa ajustavel para varios _buildCards
+                Wrap(
                   spacing: 16,
                   runSpacing: 16,
                   alignment: WrapAlignment.center,
                   children: [
-                    _buildCard('Vendas', 'R\$${viewModel.totalVendas.toStringAsFixed(2)}', Icons.attach_money, isMobile), //chama a classe viewModel para trazer o valor total
+                    _buildCard(
+                      'Vendas',
+                      'R\$${viewModel.totalVendas.toStringAsFixed(2)}',
+                      Icons.attach_money,
+                      isMobile,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 32),
@@ -61,7 +68,7 @@ class DashboardHome extends StatelessWidget { //estrutra da tela home
                   title: 'Vendas do Dia',
                   child: ChangeNotifierProvider(
                     create: (_) {
-                      final vendas = Provider.of<DashboardViewModel>(context, listen: false).vendas;
+                      final vendas = viewModel.vendas;
                       return GraficoLinhaViewModel()..dados = vendas;
                     },
                     child: const GraficoLinha(),
@@ -70,7 +77,7 @@ class DashboardHome extends StatelessWidget { //estrutra da tela home
                 _buildGraficoContainer(
                   child: ChangeNotifierProvider(
                     create: (_) {
-                      final vendas = Provider.of<DashboardViewModel>(context, listen: false).vendas;
+                      final vendas = viewModel.vendas;
                       return GraficoPizzaViewModel()..dados = vendas;
                     },
                     child: const GraficoPizza(),
@@ -84,20 +91,20 @@ class DashboardHome extends StatelessWidget { //estrutra da tela home
     );
   }
 
-  Widget _buildCard(String title, String value, IconData icon, bool isMobile) { //estrutura do _buildCard
+  Widget _buildCard(String title, String value, IconData icon, bool isMobile) {
     return SizedBox(
       width: isMobile ? double.infinity : 250,
       height: 120,
       child: Card(
-        color: const Color.fromARGB(255, 255, 255, 255),
-        elevation: 4,
+        color: Colors.white,
+        elevation: 3,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 40, color: Colors.indigo),
+              Icon(icon, size: 40, color: Colors.grey[700]),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -106,11 +113,18 @@ class DashboardHome extends StatelessWidget { //estrutra da tela home
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF212121),
+                      ),
                     ),
                     Text(
                       value,
-                      style: const TextStyle(fontSize: 20),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Color(0xFF424242),
+                      ),
                     ),
                   ],
                 ),
@@ -122,7 +136,7 @@ class DashboardHome extends StatelessWidget { //estrutra da tela home
     );
   }
 
-  Widget _buildGraficoContainer({String? title, required Widget child}) {//estrutura do _buidlGrafico
+  Widget _buildGraficoContainer({String? title, required Widget child}) {
     return Container(
       margin: const EdgeInsets.only(top: 16),
       width: double.infinity,
@@ -130,7 +144,9 @@ class DashboardHome extends StatelessWidget { //estrutra da tela home
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +154,14 @@ class DashboardHome extends StatelessWidget { //estrutra da tela home
           if (title != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 16),
-              child: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF212121),
+                ),
+              ),
             ),
           child,
         ],
@@ -152,5 +175,3 @@ class DashboardHome extends StatelessWidget { //estrutra da tela home
     return dados.where((v) => v.iD == viewModel.usuarioID).toList();
   }
 }
-
-
