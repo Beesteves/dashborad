@@ -1,11 +1,9 @@
 import 'package:dashboard/views/login.dart';
-// import 'package:flutter/foundation.dart';
+import 'package:dashboard/views/splash_scream.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-// import 'dart:ui' as ui;
-// import 'dart:html' as html;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.grey,
       ),
-      home: const LoginScreen(),
+      home: const SplashScreen(),
     );
   }
 }
