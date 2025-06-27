@@ -1,6 +1,7 @@
 import 'package:dashboard/viewmodels/grafico_viewmodels.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class GraficoPizza extends StatelessWidget {
@@ -11,6 +12,7 @@ class GraficoPizza extends StatelessWidget {
     final vm = Provider.of<GraficoPizzaViewModel>(context);
     final dados = vm.dadosAgrupados;
     final total = vm.total;
+    final formatador = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +48,7 @@ class GraficoPizza extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         ...dados.map((item) {
-          final valorLabel = 'R\$${item['valor'].toStringAsFixed(2)}';
+          final valorLabel = formatador.format(item['valor']);
 
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -79,6 +81,7 @@ class GraficoPizza extends StatelessWidget {
   void mostrarDetalhesVenda(BuildContext context, String formPag) {
     final vm = Provider.of<GraficoPizzaViewModel>(context, listen: false);
     final vendasFiltradas = vm.filtrarPorFormaPagamento(formPag);
+    final formatador = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
 
     showDialog(
       context: context,
@@ -94,9 +97,10 @@ class GraficoPizza extends StatelessWidget {
               separatorBuilder: (_, __) => const Divider(),
               itemBuilder: (context, index) {
                 final venda = vendasFiltradas[index];
+                final valorFormatado = formatador.format(venda.valor);
                 return ListTile(
                   leading: const Icon(Icons.monetization_on),
-                  title: Text('Valor: R\$${(venda.valor).toStringAsFixed(2)}'),
+                  title: Text('Valor: $valorFormatado'),
                   subtitle: Text('Tipo: ${venda.tipo}'),
                 );
               },

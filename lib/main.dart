@@ -1,4 +1,3 @@
-import 'package:dashboard/views/login.dart';
 import 'package:dashboard/views/splash_scream.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';

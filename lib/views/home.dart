@@ -7,6 +7,7 @@ import 'package:dashboard/widgets/grafico_linha.dart';
 import 'package:dashboard/views/login.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 
 class DashboardHome extends StatelessWidget {
@@ -16,6 +17,7 @@ class DashboardHome extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
+    final formatador = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
 
     final viewModel = Provider.of<DashboardViewModel>(context);
 
@@ -57,7 +59,7 @@ class DashboardHome extends StatelessWidget {
                   children: [
                     _buildCard(
                       'Vendas',
-                      'R\$${viewModel.totalVendas.toStringAsFixed(2)}',
+                      formatador.format(viewModel.totalVendas),
                       Icons.attach_money,
                       isMobile,
                     ),
@@ -65,7 +67,6 @@ class DashboardHome extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
                 _buildGraficoContainer(
-                  title: 'Vendas do Dia',
                   child: ChangeNotifierProvider(
                     create: (_) {
                       final vendas = viewModel.vendas;

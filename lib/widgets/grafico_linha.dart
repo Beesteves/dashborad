@@ -1,6 +1,7 @@
 import 'package:dashboard/viewmodels/grafico_viewmodels.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class GraficoLinha extends StatelessWidget {
@@ -10,8 +11,17 @@ class GraficoLinha extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = Provider.of<GraficoLinhaViewModel>(context);
     final vendas = vm.valores;
+    final formatador = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
 
-    return SizedBox(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Vendas do Dia',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+    SizedBox(
       height: 300,
       child: LineChart(
         LineChartData(
@@ -35,7 +45,7 @@ class GraficoLinha extends StatelessWidget {
                 interval: 100,
                 getTitlesWidget: (value, _) => FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: Text('R\$${value.toInt()}'),
+                  child: Text(formatador.format(value)),
                 ),
               ),
             ),
@@ -54,7 +64,7 @@ class GraficoLinha extends StatelessWidget {
               tooltipBgColor: Colors.black87,
               getTooltipItems: (spots) => spots.map(
                 (spot) => LineTooltipItem(
-                  'R\$ ${spot.y.toStringAsFixed(2)}',
+                  formatador.format(spot.y),
                   const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ).toList(),
@@ -88,6 +98,8 @@ class GraficoLinha extends StatelessWidget {
           maxY: vm.maxValor + 50,
         ),
       ),
+    )
+    ]
     );
   }
 }
